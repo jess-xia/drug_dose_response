@@ -1,7 +1,19 @@
 import pandas as pd
+from pathvalidate import sanitize_filename
 
 # Specify the path to your Excel file
 excel_file = 'C:/GSC Project/drug_dose_response/raw_data/temporarySkanitExport Jun Mon 10 2024 13-31-42-7611086.xlsx'
+plot_title = 'G571 Epacadostat (50 min post MTS addition)'
+
+# excel_file = 'C:/GSC Project/drug_dose_response/raw_data/temporarySkanitExport Jun Mon 10 2024 13-32-05-7272353.xlsx'
+# plot_title = 'G571 Epacadostat (100 min post MTS addition)'
+
+
+# excel_file = 'C:/GSC Project/drug_dose_response/raw_data/temporarySkanitExport Jun Mon 10 2024 13-32-25-6989613.xlsx'
+# plot_title = 'G571 Epacadostat (180 min post MTS addition)'
+
+plot_filename = sanitize_filename(plot_title)
+plot_filename = plot_filename.replace(' ', '_')
 
 # Read the Excel file into a pandas DataFrame
 df = pd.read_excel(excel_file)
@@ -61,14 +73,15 @@ responses_fit = dose_response(doses_fit, *popt)
 
 # Plot the data and the fit
 plt.figure(figsize=(8, 6))
-plt.scatter(doses, responses, label='Data', color='blue')
-plt.plot(doses_fit, responses_fit, label='Fit', color='red')
-plt.axvline(x=ic50, color='green', linestyle='--', label=f'IC50: {ic50:.2f}')
+plt.scatter(doses, responses, label='Data', color='#226E9C')
+plt.plot(doses_fit, responses_fit, label='Fit', color='#3C93C2')
+plt.axvline(x=ic50, color='#FC4E2A', linestyle='--', label=f'IC50: {ic50:.2f}')
 plt.xscale('log')
 plt.xlabel('Dose (uM)')
 plt.ylabel('Absorbance (Cell Viability)')
 plt.legend()
-plt.title('Dose-Response Curve')
+plt.title(plot_title)
+plt.savefig('C:/GSC Project/drug_dose_response/figures/' + plot_filename + '.png')
 plt.show()
 
 
