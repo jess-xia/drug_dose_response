@@ -2,8 +2,8 @@ import pandas as pd
 from pathvalidate import sanitize_filename
 
 # Specify the path to your Excel file
-excel_file = 'C:/GSC Project/drug_dose_response/raw_data/temporarySkanitExport Jun Mon 10 2024 13-31-42-7611086.xlsx'
-plot_title = 'G571 Epacadostat (50 min post MTS addition)'
+# excel_file = 'C:/GSC Project/drug_dose_response/raw_data/temporarySkanitExport Jun Mon 10 2024 13-31-42-7611086.xlsx'
+# plot_title = 'G571 Epacadostat (50 min post MTS addition)'
 
 # excel_file = 'C:/GSC Project/drug_dose_response/raw_data/temporarySkanitExport Jun Mon 10 2024 13-32-05-7272353.xlsx'
 # plot_title = 'G571 Epacadostat (100 min post MTS addition)'
@@ -11,6 +11,21 @@ plot_title = 'G571 Epacadostat (50 min post MTS addition)'
 
 # excel_file = 'C:/GSC Project/drug_dose_response/raw_data/temporarySkanitExport Jun Mon 10 2024 13-32-25-6989613.xlsx'
 # plot_title = 'G571 Epacadostat (180 min post MTS addition)'
+
+
+# excel_file = 'C:/GSC Project/drug_dose_response/raw_data/temporarySkanitExport Jun Mon 10 2024 13-32-40-4512711.xlsx'
+# plot_title = 'G571 5-FU (50 min post MTS addition)'
+# plot_title = 'G571 1-MT (50 min post MTS addition)'
+
+# excel_file = 'C:/GSC Project/drug_dose_response/raw_data/temporarySkanitExport Jun Mon 10 2024 13-32-53-5868221.xlsx'
+# plot_title = 'G571 5-FU (100 min post MTS addition)'
+# plot_title = 'G571 1-MT (100 min post MTS addition)'
+
+excel_file = 'C:/GSC Project/drug_dose_response/raw_data/temporarySkanitExport Jun Mon 10 2024 13-33-17-3498565.xlsx'
+plot_title = 'G571 5-FU (180 min post MTS addition)'
+# plot_title = 'G571 1-MT (180 min post MTS addition)'
+
+
 
 plot_filename = sanitize_filename(plot_title)
 plot_filename = plot_filename.replace(' ', '_')
@@ -42,10 +57,24 @@ plate_only_df = plate_only_df.set_index(plate_only_df.columns[0])
 print(plate_only_df)
 
 # Calculate the mean of each column
-mean_abs = plate_only_df.mean(axis=0)
+# mean_abs = plate_only_df.mean(axis=0)
+# For when there are no replicates
+# 5-FU
+mean_abs = plate_only_df.iloc[0, :]
+# 1-MT
+# mean_abs = plate_only_df.iloc[1, :]
 
 # Replace 0 dose with 1e-9 for plotting
-concentrations = [1141, 570.5, 285.2, 142.6, 71.3, 35.7, 17.8, 8.9, 4.5, 0]
+# Epacadostat concentrations
+# concentrations = [1141, 570.5, 285.2, 142.6, 71.3, 35.7, 17.8, 8.9, 4.5, 0]
+# 5-FU concentrations
+concentrations = [400, 200, 100, 50, 25, 12.5, 6.25, 3.125, 1.0625, 0]
+# 1-MT concentrations
+# concentrations = [114.6, 57.3, 28.6, 14.3, 7.16, 3.58, 1.79, 0.89, 0.45, 0]
+
+# Replace 0 dose with 1e-9 for plotting
+# mean_abs = mean_abs.replace(0, 1e-6)
+
 
 # Plot the dose-response curve
 import numpy as np
@@ -56,9 +85,12 @@ from scipy.optimize import curve_fit
 def dose_response(x, bottom, top, ic50, hill_slope):
     return bottom + (top - bottom) / (1 + (x / ic50)**hill_slope)
 
-# Example data (doses and responses)
+
+
+# Remove the 0 dose and corresponding response
 doses = np.array(concentrations[:-1])
 responses = np.array(mean_abs[:-1])
+
 # Fit the model to the data
 popt, pcov = curve_fit(dose_response, doses, responses, bounds=([0, 0, 0, 0], [100, 100, 100, 2]))
 
@@ -83,5 +115,15 @@ plt.legend()
 plt.title(plot_title)
 plt.savefig('C:/GSC Project/drug_dose_response/figures/' + plot_filename + '.png')
 plt.show()
+
+
+
+
+
+
+
+
+
+
 
 
